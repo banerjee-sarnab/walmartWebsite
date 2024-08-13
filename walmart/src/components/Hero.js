@@ -19,7 +19,7 @@ const Hero = () => {
         </div>
 
         {/* Second Deal */}
-        <div className="hidden w-full   h-[35rem]   md:flex   md:w-[30vw]  relative  rounded-[1rem] mt-4  ">
+        <div className=" w-full   h-[35rem]   md:flex   md:w-[30vw]  relative  rounded-[1rem] mt-4  ">
           <img
             src={laptop}
             alt=""

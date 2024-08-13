@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../assets/logo1.png";
+import { useState } from "react";
 import { FaLayerGroup } from "react-icons/fa";
 import { HiUserGroup } from "react-icons/hi";
 import { GoSearch } from "react-icons/go";
@@ -7,8 +8,31 @@ import { MdLogin, MdLogout } from "react-icons/md";
 import { BiWorld } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsPhone } from "react-icons/bs";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+
+
+const Navbar = ({ setCards }) => {
+  const [queryinput, setQueryinput] = useState("");
+  const token = localStorage.getItem('token');
+  console.log(token);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login'); // Redirect to login page after logout
+  };
+  const handleQuery = async (e) => {
+    e.preventDefault();
+    console.log(queryinput);
+    const fetchData = async () => {
+      const response = await axios.get(`http://localhost:8000/api/getRecommendations/?query=${queryinput}`);
+      setCards(response.data);
+    }
+    fetchData();
+    setQueryinput("");
+  };
   return (
     <div className="">
       <div className="bg-[#0071dc] px-3 py-2 lg:px-8 text-white flex justify-between items-center">
@@ -18,38 +42,53 @@ const Navbar = () => {
             <img src={logo} alt="" className=" h-12" />
           </a>
 
-          <div className="md:flex items-center gap-2 hidden hover:bg-[#06529a] p-3 rounded-full">
+          <div className="flex items-center gap-2 hover:bg-[#06529a] p-3 rounded-full">
             <FaLayerGroup className="text-[17px]" />
             <p className="text-[16px] font-semibold">Sections</p>
           </div>
-          <div className="md:flex hidden  items-center gap-2 hover:bg-[#06529a] p-3 rounded-full ">
+          <div className="flex  items-center gap-2 hover:bg-[#06529a] p-3 rounded-full ">
             <HiUserGroup className="text-[20px]" />
             <p className="text-[16px] font-semibold">Partners</p>
           </div>
         </div>
         {/* Middle */}
-        <div className="hidden relative lg:flex items-center flex-1 mx-6 ">
+        <form onSubmit={handleQuery} className="flex items-center flex-1 mx-6 text-black">
           <input
             type="search"
             className="rounded-full py-1.5 outline-0 flex-1"
+            value={queryinput}
+            onChange={(e) => { setQueryinput(e.target.value) }}
           />
-          <div className="absolute bg-[#ffc220] p-1.5 rounded-full left-1.5">
-            <GoSearch className="text-black " />
-          </div>
-        </div>
+          {/* <div className="absolute bg-[#ffc220] p-1.5 rounded-full left-1.5"> */}
+          <GoSearch type='submit' onClick={handleQuery} />
+          {/* </div> */}
+        </form>
         {/* Right */}
         <div className="flex  items-center gap-x-2">
-          <a className="flex items-center gap-2 hover:bg-[#06529a] p-3 rounded-full" href="/signup">
-            <MdLogin className="text-[17px] rotate-90" />
-            <p className="text-[16px] font-semibold">Sign up</p>
-          </a>
-          <a className="flex items-center gap-2 hover:bg-[#06529a] p-3 rounded-full whitespace-nowrap" href="/login">
-            <MdLogout className="text-[20px] -rotate-90" />
-            <p className="text-[16px] font-semibold">Log in</p>
-          </a>
-          <div className="hover:bg-[#06529a] p-3 rounded-full">
-            <AiOutlineShoppingCart className="w-7 h-7" />
-          </div>
+          {
+            !token ? (
+              <>
+                <a className="flex items-center gap-2 hover:bg-[#06529a] p-3 rounded-full" href="/signup">
+                  <MdLogin className="text-[17px] rotate-90" />
+                  <p className="text-[16px] font-semibold">Sign up</p>
+                </a>
+                <a className="flex items-center gap-2 hover:bg-[#06529a] p-3 rounded-full whitespace-nowrap" href="/login">
+                  <MdLogout className="text-[20px] -rotate-90" />
+                  <p className="text-[16px] font-semibold">Log in</p>
+                </a>
+                <div className="hover:bg-[#06529a] p-3 rounded-full">
+                  <AiOutlineShoppingCart className="w-7 h-7" />
+                </div>
+              </>
+            )
+              :
+              (
+                <a className="flex items-center gap-2 hover:bg-[#06529a] p-3 rounded-full whitespace-nowrap" onClick={handleLogout}>
+                  <MdLogout className="text-[20px] -rotate-90" />
+                  <p className="text-[16px] font-semibold">Log out</p>
+                </a>
+              )
+          }
         </div>
       </div>
       {/* Categories */}
@@ -62,8 +101,8 @@ const Navbar = () => {
           <BiWorld />
           <p className="text-[15px] hover:underline">TX Adress 87358</p>
         </div>
-        <p className="hidden md:flex hover:underline">Deals on Phones</p>
-        <p className="hidden md:flex font-bold hover:underline">
+        <p className="flex hover:underline">Deals on Phones</p>
+        <p className="flex font-bold hover:underline">
           $499 OFF on Laptops
         </p>
       </div>

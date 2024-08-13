@@ -27,12 +27,13 @@ const Deals = (props) => {
   return (
     <div className="w-full">
       <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5 md:w-max xl:w-[70vw]      gap-4 mt-4 mx-auto">
-        {cards.length ? cards.map((card) => {
+        {cards.length ? cards.map((card,index) => {
           return (
             <Card
               photo={costume}
               title={card.prod_name}
               price={card.price}
+              key={index}
             />
           );
         }) : <h1>Loading...</h1>}
