@@ -21,7 +21,7 @@ git clone https://github.com/banerjee-sarnab/walmartWebsite.git
 ### 2. Move to the desired directory
 
 ```bash
-cd walmart
+cd walmartproject
 ```
 
 ### 3. Install the required packages
